@@ -6,25 +6,21 @@
     <title>𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CSS Reset & Basic Setup */
+        /* --- CSS Structure --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body, html { width: 100%; height: 100%; background: #000; font-family: sans-serif; overflow: hidden; }
 
-        /* Background Video - Force Fill */
+        /* Background Video */
         #bg-video {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
             object-fit: cover;
             z-index: -10;
         }
 
-        /* Overlay to keep text readable */
         .overlay {
-            position: fixed;
-            top: 0; left: 0;
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
             background: rgba(0,0,0,0.6);
             z-index: -5;
@@ -32,50 +28,37 @@
 
         /* Entry Screen */
         #entry {
-            position: fixed;
-            top: 0; left: 0;
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #000;
-            z-index: 1000;
-            cursor: pointer;
-            color: #fff;
-            letter-spacing: 5px;
+            display: flex; justify-content: center; align-items: center;
+            background: #000; z-index: 1000;
+            cursor: pointer; color: #fff; letter-spacing: 5px;
             text-transform: uppercase;
-            transition: opacity 0.5s;
         }
 
-        /* Profile Content */
-        #content {
+        /* Main Content */
+        #main-content {
             display: none;
-            text-align: center;
-            color: white;
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 400px;
-            background: rgba(255,255,255,0.05);
-            padding: 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.1);
+            width: 90%; max-width: 400px;
+            background: rgba(255,255,255,0.08);
+            padding: 30px; border-radius: 20px;
+            backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
+            text-align: center; color: white; z-index: 10;
         }
-        
-        .socials { margin-top: 20px; display: flex; justify-content: center; gap: 30px; font-size: 24px; }
-        .socials a { color: white; text-decoration: none; transition: 0.3s; }
-        .socials a:hover { color: #ef4444; }
+
+        .socials { margin-top: 25px; display: flex; justify-content: center; gap: 30px; font-size: 24px; }
+        .socials a { color: white; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <!-- Enter Button: This bypasses browser restrictions -->
-    <div id="entry" onclick="startExperience()">[ CLICK TO ENTER ]</div>
+    <!-- Click to Enter (Prevents Browser Autoplay Block) -->
+    <div id="entry" onclick="start()">[ CLICK TO ENTER ]</div>
 
-    <!-- Video Element -->
+    <!-- Media -->
     <video id="bg-video" loop playsinline muted>
         <source src="bg.mp4" type="video/mp4">
     </video>
@@ -86,31 +69,40 @@
         <source src="song.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Main Content -->
-    <div id="content">
-        <h1 style="margin-bottom: 10px;">𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ</h1>
-        <p>Portfolio v1.0</p>
+    <!-- Profile -->
+    <div id="main-content">
+        <h1>𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ</h1>
+        <p id="status" style="margin-top: 10px;">Loading Status...</p>
         <div class="socials">
             <a href="https://discord.com/users/1352884385183170594"><i class="fa-brands fa-discord"></i></a>
             <a href="https://www.instagram.com/z4rvion"><i class="fa-brands fa-instagram"></i></a>
         </div>
     </div>
 
+    <!-- Scripting -->
     <script>
-        function startExperience() {
-            // Hide the Entry overlay
-            document.getElementById('entry').style.opacity = '0';
-            setTimeout(() => { document.getElementById('entry').style.display = 'none'; }, 500);
-            document.getElementById('content').style.display = 'block';
+        function start() {
+            document.getElementById('entry').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
             
-            // Start Media
-            const video = document.getElementById('bg-video');
-            const audio = document.getElementById('bg-audio');
-            
-            video.muted = false; 
-            video.play().catch(e => console.log("Video autoplay blocked"));
-            audio.play().catch(e => console.log("Audio autoplay blocked"));
+            const v = document.getElementById('bg-video');
+            const a = document.getElementById('bg-audio');
+            v.muted = false; 
+            v.play();
+            a.play();
         }
+
+        // Discord Status
+        async function fetchStatus() {
+            try {
+                const res = await fetch('https://api.lanyard.rest/v1/users/1352884385183170594');
+                const data = await res.json();
+                if(data.success) {
+                    document.getElementById('status').innerText = data.data.discord_status.toUpperCase();
+                }
+            } catch(e) { document.getElementById('status').innerText = "OFFLINE"; }
+        }
+        fetchStatus();
     </script>
 </body>
 </html>
