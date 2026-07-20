@@ -513,6 +513,21 @@
         }
 
         // Initialize status lookups and refresh intervals
+        const bgVideo = document.getElementById("bg-media");
+const bgSource = document.getElementById("bg-source");
+
+function loadBackground() {
+    if (window.innerWidth <= 768) {
+        bgSource.src = "bg-mobile.mp4";
+    } else {
+        bgSource.src = "bg-pc.mp4";
+    }
+
+    bgVideo.load();
+}
+
+loadBackground();
+window.addEventListener("resize", loadBackground);
         connectLanyard();
         setInterval(connectLanyard, 20000);
     </script>
