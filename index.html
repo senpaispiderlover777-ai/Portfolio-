@@ -1,533 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- 
-    ========================================================================================
-    PROJECT: ZARVION OFFICIAL PORTFOLIO - ULTIMATE EDITION
-    VERSION: 5.0.0 (Enterprise Production Build)
-    DEVELOPER: AI Collaborator
-    DATE: July 20, 2026
-    
-    ARCHITECTURE: Single-file monolith. 
-    INCLUDES: 
-    - Custom Particle Engine (Vanilla JS)
-    - Advanced Glassmorphism UI (Backdrop Filters, Dynamic Shadows)
-    - Robust Autoplay Handling (Bypassing Browser Strict Policies)
-    - Real-time Discord Status Integration (Lanyard API)
-    - Custom Animated Cursor
-    - Mobile-first, mathematically centered CSS Grid Layout
-    ========================================================================================
--->
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
-    <meta name="description" content="Zarvion Official Profile & Secure Gateway">
-    <title>𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ | Secure Entry</title>
-
-    <!-- Preconnecting to critical resources for speed -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://api.lanyard.rest">
-
-    <!-- External Fonts and Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
-        /* 
-           ====================================================================================
-           [1] CSS VARIABLES & THEMING SYSTEM
-           ====================================================================================
-           Controls the global aesthetic. Adjusting these values alters the entire site.
-        */
-        :root {
-            /* Color Palette */
-            --bg-color-base: #030303;
-            --text-primary: #ffffff;
-            --text-secondary: #888888;
-            --accent-glow: rgba(255, 255, 255, 0.15);
-            
-            /* Glassmorphism Configuration */
-            --glass-bg: rgba(20, 20, 20, 0.25);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-blur: 25px;
-            --glass-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-            
-            /* Status Colors */
-            --status-online: #43b581;
-            --status-idle: #faa61a;
-            --status-dnd: #f04747;
-            --status-offline: #747f8d;
-            
-            /* Layout & Timing */
-            --card-radius: 24px;
-            --transition-slow: 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            --transition-fast: 0.3s ease;
-        }
+        /* --- Basic Reset --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; background: #000; font-family: sans-serif; overflow: hidden; }
 
-        /* 
-           ====================================================================================
-           [2] GLOBAL RESET & TYPOGRAPHY
-           ====================================================================================
-        */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Custom Cursor Definition */
-        body, html {
-            width: 100%;
-            height: 100vh;
-            background-color: var(--bg-color-base);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: var(--text-primary);
-            overflow: hidden;
-            cursor: crosshair; /* Fallback cursor */
-        }
-
-        /* Custom Animated Cursor Element */
-        .custom-cursor {
+        /* --- BACKGROUND VIDEO FIX --- */
+        /* Ye CSS video ko force karegi screen par hamesha dikhne ke liye */
+        #bg-video {
             position: fixed;
-            top: 0; left: 0;
-            width: 20px; height: 20px;
-            border: 2px solid var(--text-primary);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99999;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
-            mix-blend-mode: difference;
-        }
-        
-        .custom-cursor.active {
-            width: 40px; height: 40px;
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        /* 
-           ====================================================================================
-           [3] MEDIA LAYERS (VIDEO, AUDIO, CANVAS)
-           ====================================================================================
-        */
-        /* The main background video */
-        #media-layer-video {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
             transform: translate(-50%, -50%);
             object-fit: cover;
-            z-index: -100;
-            filter: brightness(0.35) contrast(1.1) saturate(1.2);
-            pointer-events: none;
+            z-index: -10;
         }
 
-        /* Particle engine canvas */
-        #particle-canvas {
-            position: fixed;
-            top: 0; left: 0;
+        .overlay {
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: -90;
-            pointer-events: none;
-            opacity: 0.6;
+            background: rgba(0,0,0,0.6);
+            z-index: -5;
         }
 
-        /* Vignette overlay for depth */
-        .vignette-overlay {
-            position: fixed;
-            top: 0; left: 0;
+        /* --- CLICK TO ENTER SCREEN --- */
+        #entry {
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 0%, #000 120%);
-            z-index: -80;
-            pointer-events: none;
-        }
-
-        /* 
-           ====================================================================================
-           [4] ENTRY GATEWAY (CLICK TO ENTER)
-           ====================================================================================
-        */
-        #gateway-screen {
-            position: fixed;
-            inset: 0;
-            background: #000000;
-            display: grid;
-            place-items: center;
-            z-index: 10000;
-            transition: opacity var(--transition-slow), visibility var(--transition-slow);
-        }
-
-        .gateway-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .gateway-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: var(--text-primary);
-            padding: 15px 40px;
-            font-size: 0.9rem;
-            letter-spacing: 6px;
+            display: flex; justify-content: center; align-items: center;
+            background: #000; z-index: 1000;
+            cursor: pointer; color: #fff; letter-spacing: 5px;
             text-transform: uppercase;
-            cursor: pointer;
+        }
+
+        /* --- MAIN UI (Mashed Up Fix) --- */
+        #main-wrapper {
+            display: none;
+            width: 100%; height: 100%;
             position: relative;
-            overflow: hidden;
-            transition: all var(--transition-fast);
-            border-radius: 4px;
-            font-family: inherit;
+            z-index: 10;
         }
 
-        .gateway-btn::before {
-            content: '';
+        #main-content {
             position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%; max-width: 400px;
+            background: rgba(255,255,255,0.08);
+            padding: 30px; border-radius: 20px;
+            backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
+            text-align: center; color: white;
         }
 
-        .gateway-btn:hover {
-            border-color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
-
-        .gateway-btn:hover::before {
-            left: 100%;
-        }
-        
-        .gateway-hint {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            animation: pulseText 2s infinite;
-        }
-
-        @keyframes pulseText {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        /* 
-           ====================================================================================
-           [5] MAIN APPLICATION INTERFACE
-           ====================================================================================
-        */
-        #app-container {
-            display: grid;
-            place-items: center;
-            width: 100vw;
-            height: 100vh;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity var(--transition-slow), visibility var(--transition-slow);
-            perspective: 1000px;
-        }
-
-        .profile-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur));
-            -webkit-backdrop-filter: blur(var(--glass-blur));
-            border: 1px solid var(--glass-border);
-            border-radius: var(--card-radius);
-            padding: 3.5rem 2.5rem;
-            width: 90%;
-            max-width: 420px;
-            text-align: center;
-            box-shadow: var(--glass-shadow);
-            transform: translateY(40px) scale(0.95);
-            opacity: 0;
-            transition: transform var(--transition-slow), opacity var(--transition-slow);
-        }
-
-        /* When active, the card floats up into place */
-        #app-container.active .profile-card {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
-
-        /* Avatar Container (Optional structure for future use) */
-        .avatar-container {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 20px auto;
-            border: 2px solid rgba(255,255,255,0.1);
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        .title-display {
-            font-size: 2.8rem;
-            font-weight: 300;
-            letter-spacing: 4px;
-            margin-bottom: 5px;
-            background: linear-gradient(to right, #fff, #aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* 
-           ====================================================================================
-           [6] DISCORD STATUS MODULE
-           ====================================================================================
-        */
-        .status-wrapper {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 8px 18px;
-            border-radius: 50px;
-            margin-top: 10px;
-            margin-bottom: 35px;
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: var(--status-offline);
-            box-shadow: 0 0 10px var(--status-offline);
-            transition: background-color 0.5s ease, box-shadow 0.5s ease;
-        }
-
-        .status-text {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        /* 
-           ====================================================================================
-           [7] SOCIAL NAVIGATION LINKS
-           ====================================================================================
-        */
-        .social-grid {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-        }
-
-        .social-link {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            font-size: 1.4rem;
-            text-decoration: none;
-            transition: all var(--transition-fast);
-        }
-
-        .social-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-8px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            color: #fff;
-            border-color: rgba(255,255,255,0.3);
-        }
-
-        /* Media Queries for Mobile Perfection */
-        @media (max-width: 480px) {
-            .profile-card { padding: 2.5rem 1.5rem; }
-            .title-display { font-size: 2.2rem; }
-            .gateway-btn { padding: 12px 30px; font-size: 0.8rem; }
-        }
+        .socials { margin-top: 25px; display: flex; justify-content: center; gap: 30px; font-size: 24px; }
+        .socials a { color: white; text-decoration: none; transition: 0.3s; }
+        .socials a:hover { color: #888; }
     </style>
 </head>
 <body>
 
-    <!-- Custom Cursor -->
-    <div class="custom-cursor" id="custom-cursor"></div>
+    <div id="entry" onclick="start()">[ CLICK TO ENTER ]</div>
 
-    <!-- ENTRY GATEWAY -->
-    <div id="gateway-screen">
-        <div class="gateway-content">
-            <button class="gateway-btn" id="btn-enter" onclick="SystemCore.initSequence()">Enter Experience</button>
-            <div class="gateway-hint">Audio Visual Access Required</div>
+    <video id="bg-video" autoplay loop playsinline muted>
+        <source src="bg.mp4" type="video/mp4">
+    </video>
+    
+    <div class="overlay"></div>
+
+    <audio id="bg-audio" loop>
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="main-wrapper">
+        <div id="main-content">
+            <h1>𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ</h1>
+            <p id="status" style="margin-top: 10px;">Loading Status...</p>
+            <div class="socials">
+                <a href="https://discord.com/users/1352884385183170594"><i class="fa-brands fa-discord"></i></a>
+                <a href="https://www.instagram.com/z4rvion"><i class="fa-brands fa-instagram"></i></a>
+            </div>
         </div>
     </div>
 
-    <!-- BACKGROUND MEDIA LAYERS -->
-    <video id="media-layer-video" loop playsinline muted>
-        <source src="bg.mp4" type="video/mp4">
-    </video>
-    <audio id="media-layer-audio" loop>
-        <source src="song.mp3" type="audio/mpeg">
-    </audio>
-    
-    <canvas id="particle-canvas"></canvas>
-    <div class="vignette-overlay"></div>
-
-    <!-- MAIN APPLICATION UI -->
-    <div id="app-container">
-        <main class="profile-card">
-            <!-- Optional Avatar Icon (Commented out by default, ready if needed) -->
-            <!-- <div class="avatar-container"><i class="fa-solid fa-user"></i></div> -->
-            
-            <h1 class="title-display">𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ</h1>
-            
-            <div class="status-wrapper">
-                <div class="status-indicator" id="ui-status-dot"></div>
-                <span class="status-text" id="ui-status-text">INITIALIZING...</span>
-            </div>
-            
-            <nav class="social-grid">
-                <!-- Hover classes trigger the custom cursor expansion -->
-                <a href="https://discord.com/users/1352884385183170594" target="_blank" class="social-link hoverable" aria-label="Discord">
-                    <i class="fa-brands fa-discord"></i>
-                </a>
-                <a href="https://www.instagram.com/z4rvion" target="_blank" class="social-link hoverable" aria-label="Instagram">
-                    <i class="fa-brands fa-instagram"></i>
-                </a>
-            </nav>
-        </main>
-    </div>
-
-    <!-- 
-         ====================================================================================
-         [8] JAVASCRIPT SYSTEM CORE ENGINE
-         ====================================================================================
-    -->
     <script>
-        /**
-         * SystemCore: The main application controller.
-         * Encapsulates all logic to prevent global namespace pollution.
-         */
-        const SystemCore = {
-            config: {
-                discordId: '1352884385183170594',
-                apiEndpoint: 'https://api.lanyard.rest/v1/users/',
-                refreshInterval: 30000 // 30 seconds
-            },
+        function start() {
+            // Screen hatao aur main UI dikhao
+            document.getElementById('entry').style.display = 'none';
+            document.getElementById('main-wrapper').style.display = 'block';
+            
+            // Media play karo
+            const v = document.getElementById('bg-video');
+            const a = document.getElementById('bg-audio');
+            
+            if(v) {
+                v.muted = false; 
+                v.play().catch(e => console.log("Video wait"));
+            }
+            if(a) {
+                a.play().catch(e => console.log("Audio wait"));
+            }
+        }
 
-            dom: {
-                gateway: document.getElementById('gateway-screen'),
-                app: document.getElementById('app-container'),
-                video: document.getElementById('media-layer-video'),
-                audio: document.getElementById('media-layer-audio'),
-                statusText: document.getElementById('ui-status-text'),
-                statusDot: document.getElementById('ui-status-dot'),
-                cursor: document.getElementById('custom-cursor')
-            },
-
-            /**
-             * Master Boot Sequence
-             * Handles UI transitions and Media unlocking safely.
-             */
-            async initSequence() {
-                console.log("[SYSTEM] Boot sequence initiated...");
-                
-                // 1. Transition UI
-                this.dom.gateway.style.opacity = '0';
-                this.dom.gateway.style.visibility = 'hidden';
-                
-                // Allow gateway to fade out before fading app in
-                setTimeout(() => {
-                    this.dom.gateway.style.display = 'none';
-                    this.dom.app.style.visibility = 'visible';
-                    this.dom.app.style.opacity = '1';
-                    
-                    // Add active class to trigger CSS transform animations on the card
-                    requestAnimationFrame(() => {
-                        this.dom.app.classList.add('active');
-                    });
-                }, 800);
-
-                // 2. Unlock Media (Bypassing Autoplay restrictions via user click)
-                try {
-                    this.dom.video.muted = false; // Unmute video if it has audio
-                    
-                    // Play promises
-                    const playVideo = this.dom.video.play();
-                    const playAudio = this.dom.audio.play();
-
-                    if (playVideo !== undefined) {
-                        playVideo.catch(e => console.warn("[MEDIA] Video autoplay prevented:", e));
-                    }
-                    if (playAudio !== undefined) {
-                        playAudio.catch(e => console.warn("[MEDIA] Audio autoplay prevented:", e));
-                    }
-                } catch (error) {
-                    console.error("[MEDIA] Critical media failure:", error);
+        // Discord Status API
+        async function fetchStatus() {
+            try {
+                const res = await fetch('https://api.lanyard.rest/v1/users/1352884385183170594');
+                const data = await res.json();
+                if(data.success && data.data) {
+                    document.getElementById('status').innerText = data.data.discord_status.toUpperCase();
                 }
+            } catch(e) { 
+                document.getElementById('status').innerText = "OFFLINE"; 
+            }
+        }
+        fetchStatus();
+    </script>
+</body>
+</html>
 
-                // 3. Boot Sub-systems
-                this.network.fetchStatus();
-                this.graphics.initParticles();
-                this.interaction.initCursor();
-                
-                // Set network polling loop
-                setInterval(() => this.network.fetchStatus(), this.config.refreshInterval);
-            },
-
-            /**
-             * Network Module: Handles API Requests (Lanyard Discord Status)
-             */
-            network: {
-                async fetchStatus() {
-                    try {
-                        console.log("[NETWORK] Fetching Lanyard data...");
-                        const response = await fetch(`${SystemCore.config.apiEndpoint}${SystemCore.config.discordId}`);
-                        
-                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                        
-                        const json = await response.json();
-
-                        if (json.success && json.data) {
-                            SystemCore.ui.updateStatus(json.data.discord_status);
-                        } else {
-                            throw new Error("API returned failure status");
-                        }
-                    } catch (error) {
-                        console.error("[NETWORK] Fetch failed:", error);
-                        SystemCore.ui.updateStatus('offline');
-                    }
-                }
-            },
-
-            /**
-             * UI Module: Handles DOM Updates
-             */
-            ui: {
-                updateStatus(statusString) {
-                    const statusConfig = {
-                        online:  { text: 'ONLINE', color: 'var(--status-online)' },
-                        idle:    { text: 'IDLE',   color: 'var(--status-idle)' },
-                        dnd:     { text: 'DND',    color: 'var(--status-dnd)' },
-                        offline: { text: 'OFFLINE',color: 'var(--status-offline)' }
-                    };
-
-                    // Default to offline if status is unrecognized
-                    const currentStatus = statusConfig[statusString] || statusConfig.offline;
-
-                    SystemCore.dom.statusText.innerText = currentStatus.text;
-                    SystemCore.dom.statusDot.style.backgroundColor = currentStatus.color;
-                    SystemCore.dom.statusDot.style.boxShadow = `0 0 12px ${currentStatus.color}`;
-                }
-            },
-
-            /**
-             * Graphics Module: Custom Vanilla JS Particle Engin
