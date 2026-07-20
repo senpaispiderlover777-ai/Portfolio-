@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ // Bio</title>
-    <!-- FontAwesome for Premium Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -319,37 +318,30 @@
 </head>
 <body>
 
-    <!-- Click To Enter Box Overlay -->
     <div id="entry-overlay" onclick="enterSite()">
         <div class="entry-text">[ click to enter ]</div>
     </div>
 
-    <!-- Full Screen Background Video -->
     <video id="bg-media" class="bg-video" loop playsinline muted>
-        <source src="https://savedly.net/f/p5dugna3" type="video/mp4">
+        <source src="bg.mp4" type="video/mp4">
     </video>
     <div class="video-overlay"></div>
 
-    <!-- Background Audio Link Track FIXED FOR song.mp3 -->
     <audio id="bg-audio" loop>
         <source src="song.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Main Bio Showcase Card Interface -->
     <div id="bio-card" class="bio-container">
         
-        <!-- Interactive Avatar Shield -->
         <div class="avatar-wrapper">
             <img id="dc-avatar" class="profile-avatar" src="https://avatar.iran.liara.run/public/38" alt="Avatar Profile">
             <div id="dc-status-dot" class="status-dot"></div>
         </div>
 
-        <!-- Identity Block Configurations -->
         <div class="display-name">𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ</div>
         <div id="dc-username" class="discord-tag">@z4rvion</div>
         <div id="dc-custom-status" class="custom-status">syncing data...</div>
 
-        <!-- Core Dossier Details -->
         <div class="about-text">
             <h3>// OPERATOR_DOSSIER</h3>
             Identity: <span>Bhavy Jain</span><br>
@@ -359,10 +351,8 @@
             Interests: <span>Minecraft</span>, <span>Free Fire</span>, <span>Roblox</span>, and deployment setups.
         </div>
 
-        <!-- Management Perks Structure Matrix -->
         <div class="services-container">
             
-            <!-- Free Service Setup -->
             <div class="service-card">
                 <div class="card-header free-title">
                     <span>FREE SETUP</span>
@@ -376,7 +366,6 @@
                 </ul>
             </div>
 
-            <!-- Paid Custom Infrastructure Setup -->
             <div class="service-card paid">
                 <div class="card-header paid-title">
                     <span>PAID PERKS</span>
@@ -392,17 +381,13 @@
 
         </div>
 
-        <!-- Sleek Link Clusters Footer Matrix -->
         <div class="socials-row">
-            <!-- Discord Connection -->
             <a href="https://discord.com/users/1352884385183170594" id="dc-link" class="social-icon" target="_blank" title="Discord Anchor">
                 <i class="fa-brands fa-discord"></i>
             </a>
-            <!-- Instagram Link -->
             <a href="https://www.instagram.com/z4rvion?igsh=MTJxdm1sdWgxaHpxMQ==" class="social-icon" target="_blank" title="Instagram Anchor">
                 <i class="fa-brands fa-instagram"></i>
             </a>
-            <!-- YouTube Channel Link -->
             <a href="https://youtube.com/@z4rvion?si=acwZgZSsRCgHFgmD" class="social-icon" target="_blank" title="YouTube Anchor">
                 <i class="fa-brands fa-youtube"></i>
             </a>
@@ -413,7 +398,6 @@
         </div>
     </div>
 
-    <!-- Guns.lol Live Engine Routine -->
     <script>
         const DISCORD_ID = "1352884385183170594"; 
 
@@ -459,8 +443,8 @@
         // Live Fetch Execution Thread via Lanyard Engine Pipeline
         async function connectLanyard() {
             try {
-                const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
-                const data = await response.json();
+                const response = `https://api.lanyard.rest/v1/users/${DISCORD_ID}`;
+                const data = await (await fetch(response)).json();
 
                 if (data.success && data.data) {
                     const presence = data.data;
@@ -503,3 +487,4 @@
     </script>
 </body>
 </html>
+
