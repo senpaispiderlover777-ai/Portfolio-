@@ -69,15 +69,30 @@
 
         /* --- Fullscreen Background Video --- */
         .bg-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            z-index: -2;
-            pointer-events: none;
-        }
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: -2;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .bg-video {
+        object-fit: cover;
+        object-position: center;
+    }
+}
+
+@media (min-width: 769px) {
+    .bg-video {
+        object-fit: cover;
+        object-position: center;
+    }
+}
+
 
         .video-overlay {
             position: fixed;
@@ -325,8 +340,8 @@
     </div>
 
     <!-- Full Screen Background Video -->
-    <video id="bg-media" class="bg-video" loop playsinline muted>
-        <source src="https://savedly.net/f/p5dugna3" type="video/mp4">
+    <video id="bg-media" class="bg-video" loop autoplay muted playsinline preload="auto">
+    <source id="bg-source" src="bg-pc.mp4" type="video/mp4">
     </video>
     <div class="video-overlay"></div>
 
