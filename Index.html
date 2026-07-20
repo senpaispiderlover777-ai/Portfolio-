@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ // Bio</title>
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #030303;
+            --text-color: #ffffff;
+            --accent-red: #ef4444; /* Neon Crimson Red */
+            --sub-text: #a1a1aa;
+            --card-bg: rgba(10, 10, 12, 0.55);
+            --card-border: rgba(255, 255, 255, 0.04);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-x: hidden;
+        }
+
+        /* Guns.lol Thin Scrollbar Aesthetic */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-red);
+            border-radius: 4px;
+        }
+
+        /* --- Click to Enter Overlay --- */
+        #entry-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        .entry-text {
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            letter-spacing: 5px;
+            color: var(--sub-text);
+            text-transform: uppercase;
+            animation: textPulse 2s infinite ease-in-out;
+        }
+
+        /* --- Fullscreen Background Video --- */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.85) 100%);
+            z-index: -1;
+            pointer-events: none;
+            backdrop-filter: blur(2px);
+        }
+
+        /* --- Biolink Main Container (Guns.lol Pop In) --- */
+        .bio-container {
+            width: 92%;
+            max-width: 460px;
+            text-align: center;
+            z-index: 10;
+            padding: 60px 0;
+            opacity: 0;
+            transform: scale(0.85) translateY(30px);
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 1s ease;
+        }
+
+        .bio-container.loaded {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Profile Avatar */
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .profile-avatar {
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            background-color: #0d0d0e;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Live Discord Status Glow Dot */
+        .status-dot {
+            width: 15px;
+            height: 15px;
+            background-color: #64748b;
+            border: 3.5px solid #070708;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.6);
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        /* Red Neon Stylized Heading */
+        .display-name {
+            font-size: 2.1rem;
+            font-weight: 800;
+            margin: 6px 0;
+            color: var(--accent-red);
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.65), 0 0 40px rgba(239, 68, 68, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .discord-tag {
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem;
+            color: var(--sub-text);
+            margin-bottom: 5px;
+            letter-spacing: 1.5px;
+        }
+
+        /* Typewriter Status Box */
+        .custom-status {
+            font-size: 0.88rem;
+            color: #f1f5f9;
+            margin-bottom: 25px;
+            font-style: italic;
+            opacity: 0.85;
+            min-height: 20px;
+            border-right: 2px solid transparent;
+            display: inline-block;
+        }
+
+        .custom-status.typing {
+            border-right: 2px solid var(--accent-red);
+            animation: blink 0.75s step-end infinite;
+        }
+
+        /* --- About Section (Bhavy Jain) --- */
+        .about-text {
+            font-size: 0.86rem;
+            color: #d4d4d8;
+            line-height: 1.65;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 18px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .about-text h3 {
+            margin-top: 0;
+            font-size: 0.8rem;
+            color: var(--accent-red);
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .about-text span {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* --- Discord Perks Layout --- */
+        .services-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 480px) {
+            .services-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: left;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .service-card.paid {
+            border-color: rgba(239, 68, 68, 0.25);
+            box-shadow: inset 0 0 20px rgba(239, 68, 68, 0.03), 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .card-header {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            letter-spacing: 0.5px;
+        }
+
+        .card-header.free-title { color: #a1a1aa; }
+        .card-header.paid-title { color: var(--accent-red); text-shadow: 0 0 12px rgba(239, 68, 68, 0.4); }
+
+        .perk-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .perk-list li {
+            font-size: 0.8rem;
+            color: #e4e4e7;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.4;
+        }
+
+        .perk-list li i {
+            margin-top: 3px;
+            font-size: 0.75rem;
+        }
+
+        .perk-list .free-icon { color: #f43f5e; }
+        .perk-list .paid-icon { color: #10b981; }
+
+        /* --- Horizontal Icons Footer Row --- */
+        .socials-row {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 25px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 16px;
+            border-radius: 50px;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .social-icon {
+            color: var(--text-color);
+            font-size: 1.65rem;
+            text-decoration: none;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.25);
+            color: var(--accent-red);
+            filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.65));
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 0.72rem;
+            color: #52525b;
+            letter-spacing: 1.5px;
+        }
+
+        /* --- Keyframes --- */
+        @keyframes textPulse {
+            0%, 100% { opacity: 0.35; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: var(--accent-red); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Click To Enter Box Overlay -->
+    <div id="entry-overlay" onclick="enterSite()">
+        <div class="entry-text">[ click to enter ]</div>
+    </div>
+
+    <!-- Full Screen Background Video -->
+    <video id="bg-media" class="bg-video" loop playsinline muted>
+        <source src="https://savedly.net/f/p5dugna3" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <!-- Background Audio Link Track (Google Drive Stream Conversion) -->
+    <audio id="bg-audio" loop>
+        <source src="https://docs.google.com/uc?export=download&id=19vDC8h-HUZyPYWOiew2rttDg--jf9cyG" type="audio/mpeg">
+    </audio>
+
+    <!-- Main Bio Showcase Card Interface -->
+    <div id="bio-card" class="bio-container">
+        
+        <!-- Interactive Avatar Shield -->
+        <div class="avatar-wrapper">
+            <img id="dc-avatar" class="profile-avatar" src="https://avatar.iran.liara.run/public/38" alt="Avatar Profile">
+            <div id="dc-status-dot" class="status-dot"></div>
+        </div>
+
+        <!-- Identity Block Configurations -->
+        <div class="display-name">𝒁𝒂𝒓𝒗𝒊𝒐𝒏 ꨄ</div>
+        <div id="dc-username" class="discord-tag">@z4rvion</div>
+        <div id="dc-custom-status" class="custom-status">syncing data...</div>
+
+        <!-- Core Dossier Details -->
+        <div class="about-text">
+            <h3>// OPERATOR_DOSSIER</h3>
+            Identity: <span>Bhavy Jain</span><br>
+            Background: Pure Digambar Jain • Native <span>Rajasthan</span><br>
+            Status: 16 Years Old • High School (Class 10th // 2026)<br>
+            Systems: <span>6+ Years</span> Complete Discord Infrastructure Engineering & Management.<br>
+            Interests: <span>Minecraft</span>, <span>Free Fire</span>, <span>Roblox</span>, and deployment setups.
+        </div>
+
+        <!-- Management Perks Structure Matrix -->
+        <div class="services-container">
+            
+            <!-- Free Service Setup -->
+            <div class="service-card">
+                <div class="card-header free-title">
+                    <span>FREE SETUP</span>
+                    <span style="font-size:0.8rem; font-weight:normal; opacity:0.6;">$0</span>
+                </div>
+                <ul class="perk-list">
+                    <li><i class="fa-solid fa-xmark free-icon"></i> Not available 24/7 support</li>
+                    <li><i class="fa-solid fa-layer-group free-icon"></i> Average template/core setup</li>
+                    <li><i class="fa-solid fa-door-open free-icon"></i> Leaves your server post-setup</li>
+                    <li><i class="fa-solid fa-robot free-icon"></i> Standard public bot auto-configs</li>
+                </ul>
+            </div>
+
+            <!-- Paid Custom Infrastructure Setup -->
+            <div class="service-card paid">
+                <div class="card-header paid-title">
+                    <span>PAID PERKS</span>
+                    <span style="font-size:0.75rem; font-weight:bold; background: rgba(239, 68, 68, 0.15); padding: 2px 6px; border-radius:4px;">PREMIUM</span>
+                </div>
+                <ul class="perk-list">
+                    <li><i class="fa-solid fa-check paid-icon"></i> Full 24/7 emergency support availability</li>
+                    <li><i class="fa-solid fa-crown paid-icon"></i> Next-level custom setup design architecture</li>
+                    <li><i class="fa-solid fa-shield-halved paid-icon"></i> Heavy secure anti-nuke / raid systems</li>
+                    <li><i class="fa-solid fa-palette paid-icon"></i> Beautiful channel layouts & custom embeds</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Sleek Link Clusters Footer Matrix -->
+        <div class="socials-row">
+            <!-- Discord Connection -->
+            <a href="https://discord.com/users/1352884385183170594" id="dc-link" class="social-icon" target="_blank" title="Discord Anchor">
+                <i class="fa-brands fa-discord"></i>
+            </a>
+            <!-- Instagram Link -->
+            <a href="https://www.instagram.com/z4rvion?igsh=MTJxdm1sdWgxaHpxMQ==" class="social-icon" target="_blank" title="Instagram Anchor">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+            <!-- YouTube Channel Link -->
+            <a href="https://youtube.com/@z4rvion?si=acwZgZSsRCgHFgmD" class="social-icon" target="_blank" title="YouTube Anchor">
+                <i class="fa-brands fa-youtube"></i>
+            </a>
+        </div>
+
+        <div class="footer">
+            [ SECURE ENDPOINT ] © 2026 Z4RVION. ALL RIGHTS RESERVED.
+        </div>
+    </div>
+
+    <!-- Guns.lol Live Engine Routine -->
+    <script>
+        const DISCORD_ID = "1352884385183170594"; 
+
+        // Sound, Media, and Scaling Card Entry Trigger Engine
+        function enterSite() {
+            const overlay = document.getElementById('entry-overlay');
+            const video = document.getElementById('bg-media');
+            const audio = document.getElementById('bg-audio');
+            const bioCard = document.getElementById('bio-card');
+
+            // Hide the startup screen smoothly
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.visibility = 'hidden'; }, 800);
+
+            // Activate media tracks
+            video.muted = false;
+            video.play().catch(err => console.log("Media initialization skipped."));
+            audio.play().catch(err => console.log("Audio routing system connected."));
+
+            // Pop out the card profile UI like guns.lol video style
+            setTimeout(() => {
+                bioCard.classList.add('loaded');
+            }, 100);
+        }
+
+        // Simulates Guns.lol typewriter logic seamlessly for dynamic status line
+        function applyTypewriterEffect(targetElement, targetText) {
+            targetElement.classList.add('typing');
+            targetElement.innerText = "";
+            let idx = 0;
+            function writeChar() {
+                if (idx < targetText.length) {
+                    targetElement.innerText += targetText.charAt(idx);
+                    idx++;
+                    setTimeout(writeChar, 75);
+                } else {
+                    targetElement.classList.remove('typing');
+                }
+            }
+            writeChar();
+        }
+
+        // Live Fetch Execution Thread via Lanyard Engine Pipeline
+        async function connectLanyard() {
+            try {
+                const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    const presence = data.data;
+                    
+                    if (presence.discord_user.avatar) {
+                        document.getElementById('dc-avatar').src = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${presence.discord_user.avatar}.png?size=256`;
+                    }
+
+                    document.getElementById('dc-username').innerText = `@${presence.discord_user.username}`;
+
+                    const dot = document.getElementById('dc-status-dot');
+                    const states = { online: '#22c55e', idle: '#eab308', dnd: '#ef4444', offline: '#64748b' };
+                    const activeState = presence.discord_status;
+                    dot.style.backgroundColor = states[activeState] || states.offline;
+                    dot.style.boxShadow = `0 0 12px ${states[activeState] || states.offline}`;
+
+                    let finalStatusText = activeState === 'offline' ? "[ OFFLINE ]" : "[ ONLINE COLD STANDBY ]";
+                    if (presence.activities && presence.activities.length > 0) {
+                        const customAct = presence.activities.find(act => act.type === 4);
+                        if (customAct && customAct.state) {
+                            finalStatusText = customAct.state;
+                        } else {
+                            finalStatusText = `Playing: ${presence.activities[0].name}`;
+                        }
+                    }
+
+                    const statusContainer = document.getElementById('dc-custom-status');
+                    if (statusContainer.innerText !== finalStatusText) {
+                        applyTypewriterEffect(statusContainer, finalStatusText);
+                    }
+                }
+            } catch (e) {
+                console.error("Lanyard error encountered: ", e);
+            }
+        }
+
+        // Initialize status lookups and refresh intervals
+        connectLanyard();
+        setInterval(connectLanyard, 20000);
+    </script>
+</body>
+  </html>
+
